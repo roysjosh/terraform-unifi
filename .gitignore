@@ -1,0 +1,9 @@
+# ansible
+ansible-hosts.ini
+
+# ssh
+id_*
+
+# terraform
+.terraform/
+terraform.tfstate*

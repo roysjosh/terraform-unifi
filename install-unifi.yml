@@ -1,0 +1,59 @@
+---
+- name: Build Rome in a day
+  become: yes
+  hosts: all
+  tasks:
+  - name: Configure UI repositories
+    ansible.builtin.copy:
+      dest: /etc/apt/sources.list.d/100-ubnt-unifi.list
+      owner: root
+      group: root
+      mode: 0644
+      content: |
+        deb [arch=amd64] https://www.ui.com/downloads/unifi/debian stable ubiquiti
+
+  - name: Install unifi-controller
+    ansible.builtin.package:
+      name: unifi
+      state: present
+
+  - name: Install iptables
+    ansible.builtin.package:
+      name: iptables-persistent
+      state: present
+
+  - name: Redirect 443 to 8443
+    ansible.builtin.iptables:
+      table: nat
+      chain: PREROUTING
+      protocol: tcp
+      destination_port: "443"
+      jump: REDIRECT
+      to_ports: "8443"
+
+  - name: Install certbot
+    ansible.builtin.package:
+      name: certbot
+      state: present
+
+  - name: Prepare certificate hook
+    ansible.builtin.copy:
+      src: rotate_unifi_keystore.sh
+      dest: /usr/local/sbin/rotate_unifi_keystore
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Run certbot
+    ansible.builtin.command:
+      argv:
+        - certbot
+        - certonly
+        - --non-interactive
+        - --domain
+        - "{{ inventory_hostname }}"
+        - --deploy-hook
+        - /usr/local/sbin/rotate_unifi_keystore
+      creates: "/etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem"
+
+# auto upgrade script?
