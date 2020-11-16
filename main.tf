@@ -165,7 +165,7 @@ resource "aws_eip" "controller-elastic-ip" {
 }
 
 output "public_dns" {
-    value = aws_instance.controller.public_dns
+    value = var.hostname != "" ? var.hostname : aws_instance.controller.public_dns
 }
 
 output "public_ip" {

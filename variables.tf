@@ -1,3 +1,7 @@
+variable "hostname" {
+    type = string
+}
+
 variable "management_cidr_blocks" {
     type = list(string)
 }

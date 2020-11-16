@@ -1,3 +1,5 @@
+hostname = ""
+
 management_cidr_blocks = [
 ]
 
