@@ -12,6 +12,11 @@
       content: |
         deb [arch=amd64] https://www.ui.com/downloads/unifi/debian stable ubiquiti
 
+  - name: Install JRE8
+    ansible.builtin.package:
+      name: openjdk-8-jre-headless
+      state: present
+
   - name: Install unifi-controller
     ansible.builtin.package:
       name: unifi
