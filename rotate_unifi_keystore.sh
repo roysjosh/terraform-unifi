@@ -5,7 +5,12 @@ PRIV=$RENEWED_LINEAGE/privkey.pem
 PASS=aircontrolenterprise
 P12F=`mktemp`
 
-cd /var/lib/unifi/data
+cd /var/lib/unifi
+
+[ -f $CERT ] || exit 1
+[ -f $PRIV ] || exit 1
+[ -f keystore ] || exit 1
+
 # create p12 from cert/key
 openssl pkcs12 -export -in $CERT -inkey $PRIV -out $P12F -passout pass:$PASS -name unifi
 # backup existing
