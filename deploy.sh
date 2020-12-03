@@ -7,6 +7,7 @@ SSH_KEY=$HOME/.ssh/id_unifi
 [ -L `basename $SSH_KEY.pub` ] || ln -s $SSH_KEY.pub
 
 # create AWS resources
+[ -d .terraform ] || terraform init
 terraform apply
 UNIFI_HOST=`terraform output public_dns`
 
